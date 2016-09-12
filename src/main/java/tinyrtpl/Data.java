@@ -7,6 +7,7 @@ package tinyrtpl;
 import java.util.*;
 import java.math.BigDecimal;
 
+import org.apache.commons.beanutils.converters.DoubleConverter;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 public class Data {
@@ -84,7 +85,7 @@ public class Data {
      */
     private static HashMap<String, Data> dataMapOf(HashMap<Object, Object> map) {
         if(map == null) return null;
-        HashMap<String, Data> dmap = new HashMap<>();
+        HashMap<String, Data> dmap = new HashMap<String, Data>();
         Iterator it = map.entrySet().iterator();
         int vType = -1;
         while (it.hasNext()) {
@@ -102,7 +103,7 @@ public class Data {
      */
     private static ArrayList<Data> dataArrayOf(List<Object> list) {
         if(list == null) return null;
-        ArrayList<Data> darray = new ArrayList<>();
+        ArrayList<Data> darray = new ArrayList<Data>();
         if(list.size() == 0) return darray;
         int vType = -1;
         for(Object obj : list) {
@@ -125,17 +126,17 @@ public class Data {
             case 0:
                 return;
             case 1:
-                this.vboolean = (boolean) obj;
+                this.vboolean = (Boolean) obj;
                 break;
             case 2:
-                this.vint = (int) obj;
+                this.vint = (Integer) obj;
                 break;
             case 3:
                 if (obj instanceof Float) {
-                    BigDecimal b = new BigDecimal(String.valueOf((float) obj));
+                    BigDecimal b = new BigDecimal(String.valueOf((Float) obj));
                     this.vfloat = b.doubleValue();
                 } else {
-                    this.vfloat = (double) obj;
+                    this.vfloat = (Double) obj;
                 }
                 break;
             case 4:
@@ -222,18 +223,18 @@ public class Data {
         String str;
         switch (type) {
             case 1:
-                str = Boolean.toString((boolean) obj);
+                str = Boolean.toString((Boolean) obj);
                 break;
             case 2:
-                str = Integer.toString((int) obj);
+                str = Integer.toString((Integer) obj);
                 break;
             case 3:
                 double d;
                 if (obj instanceof Float) {
-                    BigDecimal b = new BigDecimal(String.valueOf((float) obj));
+                    BigDecimal b = new BigDecimal(String.valueOf((Float) obj));
                     d = b.doubleValue();
                 } else {
-                    d = (double) obj;
+                    d = (Double) obj;
                 }
                 str = Double.toString(d);
                 break;
@@ -473,7 +474,7 @@ public class Data {
                     case 4:
                         Object nd = d.toNumber();
                         if(nd instanceof Integer || nd instanceof Double)
-                            return this.vfloat == (double)nd;
+                            return this.vfloat == (Double) nd;
                         return false;
                     case 5:
                         return this.vfloat == 0 && d.vmap == null;
@@ -598,9 +599,9 @@ public class Data {
                 va = a.toNumber();
                 vb = b.toNumber();
                 if (a.type == 2 && b.type == 2) {
-                    data = new Data((int) va + (int) vb, 2);
+                    data = new Data((Integer) va + (Integer) vb, 2);
                 } else {
-                    data = new Data((double) va + (double) vb, 3);
+                    data = new Data((Double) va + (Double) vb, 3);
                 }
                 break;
             case 2: // -
@@ -610,9 +611,9 @@ public class Data {
                 va = a.toNumber();
                 vb = b.toNumber();
                 if (a.type == 2 && b.type == 2) {
-                    data = new Data((int) va - (int) vb, 2);
+                    data = new Data((Integer) va - (Integer) vb, 2);
                 } else {
-                    data = new Data((double) va - (double) vb, 3);
+                    data = new Data((Double) va - (Double) vb, 3);
                 }
                 break;
             case 3: // *
@@ -622,19 +623,19 @@ public class Data {
                 va = a.toNumber();
                 vb = b.toNumber();
                 if (a.type == 2 && b.type == 2) {
-                    data = new Data((int) va * (int) vb, 2);
+                    data = new Data((Integer) va * (Integer) vb, 2);
                 } else {
-                    data = new Data((double) va * (double) vb, 3);
+                    data = new Data((Double) va * (Double) vb, 3);
                 }
                 break;
             case 4: // /
                 va = a.toNumber();
-                if (va instanceof Integer && (int) va == 0) return new Data(0, 2);
-                if (va instanceof Double && (double) va == 0) return new Data(0, 3);
+                if (va instanceof Integer && (Integer) va == 0) return new Data(0, 2);
+                if (va instanceof Double && (Double) va == 0) return new Data(0, 3);
                 vb = b.toNumber();
-                if (vb instanceof Integer && (int) vb == 0) return null;
-                if (vb instanceof Double && (double) vb == 0) return null;
-                data = new Data((double) va / (double) vb, 3);
+                if (vb instanceof Integer && (Integer) vb == 0) return null;
+                if (vb instanceof Double && (Double) vb == 0) return null;
+                data = new Data((Double) va / (Double) vb, 3);
                 break;
             case 5: // %
                 if (a.type != 2 && b.type != 2) {
@@ -642,10 +643,10 @@ public class Data {
                 }
                 va = a.toNumber();
                 vb = b.toNumber();
-                if ((int)vb == 0) {
+                if ((Integer)vb == 0) {
                     data = new Data(0, 2);
                 } else {
-                    data = new Data((int)va % (int)vb, 2);
+                    data = new Data((Integer)va % (Integer) vb, 2);
                 }
                 break;
             case 6: // <
@@ -655,9 +656,9 @@ public class Data {
                 va = a.toNumber();
                 vb = b.toNumber();
                 if (a.type == 2 && b.type == 2) {
-                    data = new Data((int) va < (int) vb, 1);
+                    data = new Data((Integer) va < (Integer) vb, 1);
                 } else {
-                    data = new Data((double) va < (double) vb, 1);
+                    data = new Data((Double) va < (Double) vb, 1);
                 }
                 break;
             case 7: // >
@@ -667,9 +668,9 @@ public class Data {
                 va = a.toNumber();
                 vb = b.toNumber();
                 if (a.type == 2 && b.type == 2) {
-                    data = new Data((int) va > (int) vb, 1);
+                    data = new Data((Integer) va > (Integer) vb, 1);
                 } else {
-                    data = new Data((double) va > (double) vb, 1);
+                    data = new Data((Double) va > (Double) vb, 1);
                 }
                 break;
             case 8: // <=
@@ -679,9 +680,9 @@ public class Data {
                 va = a.toNumber();
                 vb = b.toNumber();
                 if (a.type == 2 && b.type == 2) {
-                    data = new Data((int) va <= (int) vb, 1);
+                    data = new Data((Integer) va <= (Integer) vb, 1);
                 } else {
-                    data = new Data((double) va <= (double) vb, 1);
+                    data = new Data((Double) va <= (Double) vb, 1);
                 }
                 break;
             case 9: // >=
@@ -691,9 +692,9 @@ public class Data {
                 va = a.toNumber();
                 vb = b.toNumber();
                 if (a.type == 2 && b.type == 2) {
-                    data = new Data((int) va >= (int) vb, 1);
+                    data = new Data((Integer) va >= (Integer) vb, 1);
                 } else {
-                    data = new Data((double) va >= (double) vb, 1);
+                    data = new Data((Double) va >= (Double) vb, 1);
                 }
                 break;
             case 10: // ==

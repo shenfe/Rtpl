@@ -580,7 +580,7 @@ public class Rtpl {
         if (useAviator) {//TODO
             String exp = tl.toString();
             Object result = AviatorEvaluator.execute(exp);
-            if (result instanceof Long) result = Long.toString((long) result);
+            if (result instanceof Long) result = Long.toString((Long) result);
             if (result instanceof Boolean) {
                 return new Data(result, 1);
             } else if (result instanceof Integer) {

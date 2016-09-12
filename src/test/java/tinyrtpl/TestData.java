@@ -6,9 +6,12 @@ package tinyrtpl;
 
 import junit.framework.TestCase;
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.json.JSONException;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
+
 import java.util.Arrays;
 
 import java.util.ArrayList;
@@ -62,12 +65,12 @@ public class TestData extends TestCase {
             Assert.assertEquals(Double.toString(i), new Data(i, 3).toString());
         for(String i : stringValues)
             Assert.assertEquals(i, new Data(i, 4).toString());
-        Assert.assertEquals("", new Data(mapValue0, 5).toString());
-        Assert.assertEquals("", new Data(mapValue1, 5).toString());
-        Assert.assertEquals("", new Data(mapValueForTpl, 5).toString());
-        Assert.assertEquals("", new Data(arrayListValue0, 6).toString());
-        Assert.assertEquals("", new Data(arrayListValue1, 6).toString());
-        Assert.assertEquals("", new Data(Arrays.asList(objectArr), 6).toString());
+        Assert.assertEquals("map", new Data(mapValue0, 5).toString());
+        Assert.assertEquals("map", new Data(mapValue1, 5).toString());
+        Assert.assertEquals("map", new Data(mapValueForTpl, 5).toString());
+        Assert.assertEquals("array", new Data(arrayListValue0, 6).toString());
+        Assert.assertEquals("array", new Data(arrayListValue1, 6).toString());
+        Assert.assertEquals("array", new Data(Arrays.asList(objectArr), 6).toString());
 
         Assert.assertEquals("", new Data("", 4).toString());
         Assert.assertEquals("", new Data("", 4).toString());
@@ -78,7 +81,7 @@ public class TestData extends TestCase {
         // "
         Assert.assertEquals("string is \"\n123 abc\\\r\"", new Data("string is \"\n123 abc\\\r\"", 4).toString());
         Assert.assertEquals("true", new Data(true, 1).toString());
-        Assert.assertEquals("null", new Data(null).toString());
+        Assert.assertEquals("", new Data(null).toString());
         Assert.assertEquals("0", new Data(0, 2).toString());
     }
 
@@ -92,8 +95,14 @@ public class TestData extends TestCase {
             Assert.assertEquals(Double.toString(i), new Data(i, 3).toJsonString());
         for(String i : stringValues)
             Assert.assertEquals("\"" + StringEscapeUtils.escapeJson(i) + "\"", new Data(i, 4).toJsonString());
-        Assert.assertEquals("{\"1\":false,\"2\":0,\"3\":\"\",\"true\":0,\"-1.2\":\"\\\"\\n\\r\\n123 qwe.wer.14\\\" --=$\\\"\",\"\\\" \\n\\r\":null}",
-                new Data(mapValue0, 5).toJsonString());
+        try {
+            JSONAssert.assertEquals("{\"1\":false,\"2\":0,\"3\":\"\",\"true\":0,\"-1.2\":\"\\\"\\n\\r\\n123 qwe.wer.14\\\" --=$\\\"\",\"\\\" \\n\\r\":null}",
+                    new Data(mapValue0, 5).toJsonString(), false);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+//        Assert.assertEquals("{\"1\":false,\"2\":0,\"3\":\"\",\"true\":0,\"-1.2\":\"\\\"\\n\\r\\n123 qwe.wer.14\\\" --=$\\\"\",\"\\\" \\n\\r\":null}",
+//                new Data(mapValue0, 5).toJsonString());
         Assert.assertEquals("{}", new Data(mapValue2, 5).toJsonString());
         Assert.assertEquals("[]", new Data(Arrays.asList(objectArr), 6).toJsonString());
         Assert.assertEquals("[0,0.0,-1.0,2.1,12,-16]", new Data(Arrays.asList(0, 0.0f, -1.0f, 2.1f, 12, -16), 6).toJsonString());
@@ -114,7 +123,7 @@ public class TestData extends TestCase {
 
     @Test
     public void testEquals() {
-        HashMap<Object, Object> map = new HashMap<>();
+        HashMap<Object, Object> map = new HashMap<Object, Object>();
         Data data = new Data();
         Assert.assertEquals(new Data(map, 5), data);
         map.put("1", false);
@@ -141,8 +150,8 @@ public class TestData extends TestCase {
 //        System.out.println(data.toString());
 //        System.out.println(data.toJsonString());
 
-        ArrayList<Object> array = new ArrayList<>();
-        data = new Data(new ArrayList<>(), 6);
+        ArrayList<Object> array = new ArrayList<Object>();
+        data = new Data(new ArrayList<Data>(), 6);
         Assert.assertEquals(new Data(array, 6), data);
         array.add(1);
         data.add(1);

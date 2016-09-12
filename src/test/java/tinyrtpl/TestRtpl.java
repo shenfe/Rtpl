@@ -46,7 +46,7 @@ public class TestRtpl extends TestCase {
 
     @Test
     public void testRtpl0() {
-        String rtpl0 = Rtpl.compile(new Data(mapValueForTpl, 5), "D:\\programs\\tinyRtpl\\data\\test-list");
+        String rtpl0 = Rtpl.compile(new Data(mapValueForTpl, 5), "./data/test-list");
         System.out.println(rtpl0);
     }
 }
