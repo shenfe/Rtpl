@@ -1,2 +1,3 @@
 # Rtpl
-A template engine, for java, nodejs, web, etc.
+
+A template engine for Java.
