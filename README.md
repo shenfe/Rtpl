@@ -1,3 +1,3 @@
 # Rtpl
 
-A template engine for Java.
+A simple template engine for Java.
